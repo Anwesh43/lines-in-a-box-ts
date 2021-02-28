@@ -6,7 +6,7 @@ const scGap : number = 0.02 / parts
 const strokeFactor : number = 90 
 const sizeFactor : number = 3.4 
 const delay : number = 20
-const lineSizeFactor : number = 0.8 
+const lineSizeFactor : number = 0.7
 const boxYFactor : number = 0.2 
 const colors : Array<string> = [
     "#1abc9c",
@@ -35,6 +35,9 @@ class ScaleUtil {
 class DrawingUtil {
 
     static drawLine(context : CanvasRenderingContext2D, x1 : number, y1 : number, x2 : number, y2 : number) {
+        if (Math.abs(x1 - x2) < 0.1 && Math.abs(y1 - y2) < 0.1) {
+            return 
+        }
         context.beginPath()
         context.moveTo(x1, y1)
         context.lineTo(x2, y2)
@@ -43,7 +46,7 @@ class DrawingUtil {
 
     static drawLinesInABox(context : CanvasRenderingContext2D, scale : number) {
         const boxSize : number = Math.min(w, h) / sizeFactor 
-        const lineSize : number = Math.min(w, h) / lineSizeFactor 
+        const lineSize : number = boxSize * lineSizeFactor 
         const sf : number = ScaleUtil.sinify(scale)
         const sf1 : number = ScaleUtil.divideScale(sf, 0, parts)
         const sf2 : number = ScaleUtil.divideScale(sf, 1, parts)
@@ -51,7 +54,7 @@ class DrawingUtil {
         const lineGap : number = boxSize / (2 * lines + 1) 
         context.save()
         context.translate((w - boxSize) * sf2, h *  boxYFactor)
-        context.fillRect(0, 0, boxSize * sf1, boxSize)
+        context.fillRect(0, boxSize * (1 - sf1), boxSize, boxSize * sf1)
         for (let j = 0; j < lines; j++) {
             const sfj : number = ScaleUtil.divideScale(sf, 2 + j, parts)
             context.save()
