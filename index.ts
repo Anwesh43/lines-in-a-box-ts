@@ -210,3 +210,25 @@ class LineInABox {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    lib : LineInABox = new LineInABox()
+    animator : Animator = new Animator()
+    
+    render(context : CanvasRenderingContext2D) {
+        this.lib.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.lib.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.lib.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
